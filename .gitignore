@@ -1,0 +1,15 @@
+CURSOR_*.md
+.cursorrules
+CLAUDE.md
+.claude/
+PROGRESS.md
+__pycache__/
+*.pyc
+*.cpython-*.so
+.pytest_cache/
+.coverage
+htmlcov/
+.DS_Store
+.venv/
+dist/
+*.egg-info/
