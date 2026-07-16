@@ -5,31 +5,24 @@ Pricing engine for European and American options in pure Python. Black-Scholes w
 Everything runs offline. Every number in the benchmark table below comes from a real measured run of `python -m optionslib.bench` on the build machine.
 
 ## Architecture
-                    ┌───────────────────┐
-                    │   chains.py       │
-                    │  synthetic quotes │
-                    └─────────┬─────────┘
-                              │
-          ┌───────────────────┼───────────────────┐
-          │                   │                   │
-  ┌───────▼────────┐  ┌───────▼────────┐  ┌───────▼────────┐
-  │ black_scholes  │  │   binomial     │  │ monte_carlo    │
-  │ vectorized     │  │  European +    │  │ antithetic +   │
-  │ analytic Greeks│  │   American     │  │ control variate│
-  └───────┬────────┘  └────────────────┘  └────────────────┘
-          │
-  ┌───────▼────────┐          ┌────────────────┐
-  │ implied_vol    │◄─────────┤   greeks.py    │
-  │ Newton + Brent │          │ finite diff xv │
-  └───────┬────────┘          └────────────────┘
-          │
-  ┌───────▼────────┐
-  │  surface.py    │
-  │ spline fit +   │
-  │ butterfly and  │
-  │ calendar check │
-  └────────────────┘
 
+```mermaid
+flowchart TD
+    chains[chains.py<br/>synthetic quotes]
+    bs[black_scholes<br/>vectorized<br/>analytic Greeks]
+    binom[binomial<br/>European + American]
+    mc[monte_carlo<br/>antithetic +<br/>control variate]
+    greeks[greeks.py<br/>finite diff xv]
+    iv[implied_vol<br/>Newton + Brent]
+    surface[surface.py<br/>spline fit +<br/>butterfly and<br/>calendar check]
+
+    chains --> bs
+    chains --> binom
+    chains --> mc
+    bs --> iv
+    greeks -.cross validate.-> bs
+    iv --> surface
+```
   ## Benchmarks
 
 Measured with `python -m optionslib.bench`.
